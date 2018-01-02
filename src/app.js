@@ -27,5 +27,5 @@ let fetchAndBroadcast = () => {
 }
 
 db.create()
-  .then(() => new cron.CronJob('30 * * * * *', fetchAndBroadcast).start())
+  .then(() => new cron.CronJob('15 * * * * *', fetchAndBroadcast).start())
   .then(() => tm.bot.startPolling())

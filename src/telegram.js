@@ -5,7 +5,7 @@ const bot = new Bot(process.env.BOT_TOKEN)
 
 bot.start(async (ctx) => {
   console.log(`/start ${ctx.from.id}`)
-  await db.subscribe(ctx.from.id)
+  await db.subscribe(ctx.from.id, ctx.from.first_name, ctx.from.username)
   ctx.reply('You have been subscribed')
 })
 

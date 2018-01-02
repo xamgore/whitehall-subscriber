@@ -26,11 +26,11 @@ export default {
   markRead: (uid, event) => insert('journal', { uid, event }),
 
   unsubscribe: uid => remove('active', { uid }),
-  subscribe:   uid => insert('active', { uid }),
+  subscribe:   (uid, name, nick) => insert('active', { uid, name, nick }),
   getUsers:    () => select('SELECT * FROM active'),
 
   async create() {
-    await run('CREATE TABLE IF NOT EXISTS journal(uid int, event text, UNIQUE (uid, event))')
-    await run('CREATE TABLE IF NOT EXISTS active(uid int UNIQUE)')
+    await run('CREATE TABLE IF NOT EXISTS journal(uid INT, event TEXT, UNIQUE (uid, event))')
+    await run('CREATE TABLE IF NOT EXISTS active(uid INT PRIMARY KEY, name TEXT, nick TEXT)')
   },
 }
