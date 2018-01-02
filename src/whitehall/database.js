@@ -1,5 +1,5 @@
 import sqlite from 'sqlite3-wrapper'
-import onExit from './exit'
+import onExit from '../exit'
 import util from 'util'
 
 

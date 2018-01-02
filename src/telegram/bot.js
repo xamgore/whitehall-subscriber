@@ -1,5 +1,6 @@
 import Bot from 'telegraf'
-import db from './database'
+import db from '../whitehall/database'
+import whitehall from '../whitehall/broadcast'
 
 const bot = new Bot(process.env.BOT_TOKEN)
 
@@ -7,6 +8,8 @@ bot.start((ctx) => {
   console.log(`/start ${ctx.from.id}`)
   db.subscribe(ctx.from.id, ctx.from.first_name, ctx.from.username)
     .then(ctx.reply('You have been subscribed'))
+    .then(() => whitehall.fetchAndSend(ctx.from.id))
+    .catch(err => console.error(err))
 })
 
 bot.hears('chat id', (ctx) => {
@@ -22,4 +25,4 @@ bot.command('stop', (ctx) => {
     .then(ctx.reply('Subscription was stopped'))
 })
 
-export default { bot, client: new Bot.Telegram(process.env.BOT_TOKEN) }
+export default bot
