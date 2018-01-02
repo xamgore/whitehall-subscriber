@@ -24,13 +24,12 @@ let send = async (user, events) => {
   }
 }
 
-
-let broadcast = async events =>
-  Promise.all((await db.getUsers()).map(u => send(u.uid, events)))
-
-let fetchAndBroadcast = () => {
+let broadcast = async () => {
   console.log('cron job!')
-  fetchEvents().then(events => broadcast(events))
+  let users = await db.getUsers()
+  let events = await fetchEvents()
+  console.log(`${users.length} users, ${events.length} events`)
+  return Promise.all(users.map(u => send(u.uid, events)))
 }
 
 let job = null
@@ -38,7 +37,7 @@ onExit(() => job && job.stop())
 
 db.create()
   .then(() => {
-    job = new cron.CronJob('10 * * * * *', fetchAndBroadcast)
+    job = new cron.CronJob('10 * * * * *', broadcast)
     job.start()
   })
   .then(() => tm.bot.startPolling())
