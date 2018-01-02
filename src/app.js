@@ -10,7 +10,7 @@ onExit(() => job && job.stop())
 
 db.create()
   .then(() => {
-    job = new cron.CronJob('* * 21 * * *', whitehall.fetchAndBroadcast)
+    job = new cron.CronJob('0 16 21 * * *', whitehall.fetchAndBroadcast)
     job.start()
   })
   .then(() => bot.startPolling())
