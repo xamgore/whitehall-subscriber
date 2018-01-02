@@ -1,4 +1,5 @@
 import cron from 'cron'
+import onExit from './exit'
 import db from './database'
 import tm from './telegram'
 import fetchEvents from './whitehall'
@@ -18,7 +19,7 @@ let send = async (user, events) => {
       await db.markRead(user, e.link)
 
       // not more than 4 posts per day, experimental value
-      if (count++ > 4) return
+      if (++count >= 4) return
     }
   }
 }
@@ -32,6 +33,12 @@ let fetchAndBroadcast = () => {
   fetchEvents().then(events => broadcast(events))
 }
 
+let job = null
+onExit(() => job && job.stop())
+
 db.create()
-  .then(() => new cron.CronJob('15 * * * * *', fetchAndBroadcast).start())
+  .then(() => {
+    job = new cron.CronJob('10 * * * * *', fetchAndBroadcast)
+    job.start()
+  })
   .then(() => tm.bot.startPolling())

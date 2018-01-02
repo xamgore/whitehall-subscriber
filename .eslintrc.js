@@ -26,6 +26,7 @@ module.exports = {
     'prefer-const': 0,
     'semi': ['error', 'never'],
     'no-plusplus': 0,
-    'key-spacing': ['error', { align: 'value' }]
+    'key-spacing': ['error', { align: 'value' }],
+    'import/first': 0
   }
 }

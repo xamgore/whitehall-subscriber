@@ -1,18 +1,12 @@
 import sqlite from 'sqlite3-wrapper'
-import cleanup from 'node-cleanup'
+import onExit from './exit'
 import util from 'util'
 
 
 const db = sqlite.open('./db.sqlite')
 
 // close db connection in case of sudden errors
-cleanup((exitCode, signal) => {
-  db.close()
-
-  process.kill(process.pid, signal)
-  cleanup.uninstall()
-  return false
-})
+onExit(() => db.close())
 
 // promisify functions for use in an async way
 const insert = util.promisify(db.insert)
