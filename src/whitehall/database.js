@@ -25,7 +25,7 @@ export default {
   subscribe:   (uid, name, nick) => run('INSERT OR REPLACE INTO users(\
     uid, is_active, name, nick) VALUES ((?), (?), (?), (?))', [uid, 'true', name, nick]),
 
-  getUsers: () => select('SELECT * FROM active'),
+  getUsers: () => select('SELECT * FROM users'),
 
   async create() {
     const queries = [
