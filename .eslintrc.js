@@ -27,6 +27,7 @@ module.exports = {
     'semi': ['error', 'never'],
     'no-plusplus': 0,
     'key-spacing': ['error', { align: 'value' }],
-    'import/first': 0
+    'import/first': 0,
+    'no-multi-str': 0
   }
 }

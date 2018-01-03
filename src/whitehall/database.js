@@ -11,20 +11,29 @@ onExit(() => db.close())
 // promisify functions for use in an async way
 const insert = util.promisify(db.insert)
 const select = util.promisify(db.select)
-const remove = util.promisify(db.delete)
+const update = util.promisify(db.update)
 const run = util.promisify(db.database().run.bind(db.database()))
 
 
 export default {
+  log: (uid, type) => insert('log', { uid, type }),
+
   hasRead:  (uid, event) => select({ table: 'journal', where: { uid, event } }),
   markRead: (uid, event) => insert('journal', { uid, event }),
 
-  unsubscribe: uid => remove('active', { uid }),
-  subscribe:   (uid, name, nick) => insert('active', { uid, name, nick }),
-  getUsers:    () => select('SELECT * FROM active'),
+  unsubscribe: uid => update('users', { uid }, { is_active: 'false' }),
+  subscribe:   (uid, name, nick) => run('INSERT OR REPLACE INTO users(\
+    uid, is_active, name, nick) VALUES ((?), (?), (?), (?))', [uid, 'true', name, nick]),
+
+  getUsers: () => select('SELECT * FROM active'),
 
   async create() {
-    await run('CREATE TABLE IF NOT EXISTS journal(uid INT, event TEXT, UNIQUE (uid, event))')
-    await run('CREATE TABLE IF NOT EXISTS active(uid INT PRIMARY KEY, name TEXT, nick TEXT)')
+    const queries = [
+      'CREATE TABLE IF NOT EXISTS users(uid INT PRIMARY KEY, is_active BOOLEAN NOT NULL DEFAULT true, name TEXT, nick TEXT)',
+      'CREATE TABLE IF NOT EXISTS journal(uid INT NOT NULL, event TEXT NOT NULL, UNIQUE (uid, event))',
+      'CREATE TABLE IF NOT EXISTS log(date INT NOT NULL DEFAULT current_date, uid INT NOT NULL, type INT NOT NULL)',
+    ]
+
+    await Promise.all(queries.map(q => run(q)))
   },
 }
