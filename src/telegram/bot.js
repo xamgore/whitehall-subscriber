@@ -4,6 +4,11 @@ import whitehall from '../whitehall/broadcast'
 
 const bot = new Bot(process.env.BOT_TOKEN)
 
+// set bot's username for handling commands in groups
+bot.telegram.getMe().then((botInfo) => {
+  bot.options.username = botInfo.username
+})
+
 
 bot.start((ctx) => {
   const uid = ctx.from.id
@@ -17,7 +22,7 @@ bot.start((ctx) => {
 })
 
 
-bot.hears('@whitehall_bot chat id', (ctx) => {
+bot.command('info', (ctx) => {
   console.log(`/chatid ${ctx.from.id}`)
   if (ctx.from.username !== 'xamgore') return
 
