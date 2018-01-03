@@ -17,9 +17,9 @@ bot.start((ctx) => {
 })
 
 
-bot.hears('chat id', (ctx) => {
+bot.hears('@whitehall_bot chat id', (ctx) => {
   console.log(`/chatid ${ctx.from.id}`)
-  if (ctx.from.nickname !== 'xamgore') return
+  if (ctx.from.username !== 'xamgore') return
 
   // eslint-disable-next-line
   ctx.replyWithMarkdown('```\n' + JSON.stringify(ctx.message, null, 2) + '\n```')
