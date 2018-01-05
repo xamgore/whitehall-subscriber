@@ -26,6 +26,9 @@ const getAll = async () => {
     result.push(...await getEventsOn(date.format('YYYY-MM-DD')))
   }
 
+  if (result === [])
+    throw new Error('Empty results after scrapping')
+
   return result
 }
 

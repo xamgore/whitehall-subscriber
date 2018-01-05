@@ -28,6 +28,9 @@ module.exports = {
     'no-plusplus': 0,
     'key-spacing': ['error', { align: 'value' }],
     'import/first': 0,
-    'no-multi-str': 0
+    'no-multi-str': 0,
+    'no-unused-expressions': 0,
+    'no-param-reassign': 0,
+    'consistent-return': 0
   }
 }

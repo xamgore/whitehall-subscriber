@@ -1,3 +1,4 @@
+import l from '../log'
 import Bot from 'telegraf'
 import db from '../whitehall/database'
 import whitehall from '../whitehall/broadcast'
@@ -10,20 +11,37 @@ bot.telegram.getMe().then((botInfo) => {
 })
 
 
-bot.start((ctx) => {
+bot.start(async (ctx) => {
   const uid = ctx.from.id
-  console.log(`/start ${uid}`)
 
-  db.subscribe(uid, ctx.from.first_name, ctx.from.username)
-    .then(() => db.log(uid, 1))
-    .then(() => ctx.reply('You have been subscribed'))
-    .then(() => whitehall.fetchAndSend(uid))
-    .catch(err => console.error(err))
+  console.log(`\n/start ${uid}`)
+  db.log(uid, 1)
+
+  let user = await db.getUser(uid)
+
+  if (user && user.is_active)
+    return l.i('User is registered and active, nothing to do') ||
+      ctx.reply('Вы уже подписаны на рассылку, всё ок')
+
+  if (!user) {
+    l.w('User is not registered')
+    user = { uid, name: ctx.from.first_name, nick: ctx.from.username }
+    await db.subscribe(user)
+  } else {
+    l.i('User has sent "/stop" previously')
+    db.markActive(uid)
+  }
+
+  await ctx.reply('Окей, теперь вы будете получать рассылку')
+    .then(() => l.i('Send a notification'))
+
+  l.i('Send news')
+  await whitehall.fetchAndSend(uid)
 })
 
 
 bot.command('info', (ctx) => {
-  console.log(`/chatid ${ctx.from.id}`)
+  console.log(`\n/chatid ${ctx.from.id}`)
   if (ctx.from.username !== 'xamgore') return
 
   // eslint-disable-next-line
@@ -31,13 +49,15 @@ bot.command('info', (ctx) => {
 })
 
 
-bot.command('stop', (ctx) => {
+bot.command('stop', async (ctx) => {
   const uid = ctx.from.id
-  console.log(`/stop ${uid}`)
 
-  db.unsubscribe(uid)
-    .then(() => db.log(uid, 0))
-    .then(() => ctx.reply('Subscription was stopped'))
+  console.log(`\n/stop ${uid}`)
+  db.log(uid, 0)
+
+  await db.unsubscribe(uid)
+  l.i('User is unsubscribed')
+  ctx.reply('Вы больше не будете получать рассылку')
 })
 
 

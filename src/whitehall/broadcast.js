@@ -1,3 +1,4 @@
+import l from '../log'
 import db from './database'
 import tm from '../telegram/client'
 import fetchEvents from './scrapper'
@@ -29,6 +30,7 @@ let send = async (user, events) => {
 
 
 let fetchAndSend = async (uid) => {
+  l.i('Fetch news')
   let events = await fetchEvents()
   return send(uid, events)
 }
@@ -36,7 +38,7 @@ let fetchAndSend = async (uid) => {
 
 let fetchAndBroadcast = async () => {
   console.log('broadcast!')
-  let users = await db.getUsers()
+  let users = await db.getActiveUsers()
   let events = await fetchEvents()
   console.log(`${users.length} users, ${events.length} events`)
   return Promise.all(users.map(u => send(u.uid, events)))

@@ -21,15 +21,22 @@ export default {
   hasRead:  (uid, event) => select({ table: 'journal', where: { uid, event } }),
   markRead: (uid, event) => insert('journal', { uid, event }),
 
-  unsubscribe: uid => update('users', { uid }, { is_active: 'false' }),
-  subscribe:   (uid, name, nick) => run('INSERT OR REPLACE INTO users(\
-    uid, is_active, name, nick) VALUES ((?), (?), (?), (?))', [uid, 'true', name, nick]),
+  markActive:  uid => update('users', { uid }, { is_active: true }),
+  unsubscribe: uid => update('users', { uid }, { is_active: false }),
+  subscribe:   (u) => {
+    u.is_active = true
+    return run('INSERT OR REPLACE INTO users(\
+      uid, is_active, name, nick) VALUES ((?), (?), (?), (?))',
+      [u.uid, u.is_active, u.name, u.nick])
+  },
 
-  getUsers: () => select('SELECT * FROM users'),
+  getUsers: () => select({ table: 'users', where: { is_active: true } }),
+  getUser:  uid => select({ table: 'users', where: { uid } })
+    .then(r => r.concat(null)[0]),
 
   async create() {
     const queries = [
-      'CREATE TABLE IF NOT EXISTS users(uid INT PRIMARY KEY, is_active BOOLEAN NOT NULL DEFAULT true, name TEXT, nick TEXT)',
+      'CREATE TABLE IF NOT EXISTS users(uid INT PRIMARY KEY, is_active INT NOT NULL DEFAULT 1, name TEXT, nick TEXT)',
       'CREATE TABLE IF NOT EXISTS journal(uid INT NOT NULL, event TEXT NOT NULL, UNIQUE (uid, event))',
       'CREATE TABLE IF NOT EXISTS log(date INT NOT NULL DEFAULT current_date, uid INT NOT NULL, type INT NOT NULL)',
     ]
