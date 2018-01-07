@@ -4,6 +4,7 @@ import db from '../whitehall/database'
 import whitehall from '../whitehall/broadcast'
 
 const bot = new Bot(process.env.BOT_TOKEN)
+const mk = Bot.Markup
 
 // set bot's username for handling commands in groups
 bot.telegram.getMe().then((botInfo) => {
@@ -14,7 +15,7 @@ bot.telegram.getMe().then((botInfo) => {
 bot.start(async (ctx) => {
   const uid = ctx.from.id
 
-  console.log(`\n/start ${uid}`)
+  l.cmd('/start', uid)
   db.log(uid, 1)
 
   let user = await db.getUser(uid)
@@ -41,7 +42,7 @@ bot.start(async (ctx) => {
 
 
 bot.command('info', (ctx) => {
-  console.log(`\n/chatid ${ctx.from.id}`)
+  l.cmd('/chatid', ctx.from.id)
   if (ctx.from.username !== 'xamgore') return
 
   // eslint-disable-next-line
@@ -49,10 +50,22 @@ bot.command('info', (ctx) => {
 })
 
 
+bot.action('fetch news', async (ctx) => {
+  l.cmd('/more news', ctx.from.id)
+  l.i('Send news')
+  await whitehall.fetchAndSend(ctx.from.id)
+
+  // l.i('Remove callback button')
+  // const q = ctx.callbackQuery
+  // await bot.telegram.editMessageReplyMarkup(
+  //   q.message.chat.id, q.message.message_id, q.id, mk.inlineKeyboard([]))
+})
+
+
 bot.command('stop', async (ctx) => {
   const uid = ctx.from.id
 
-  console.log(`\n/stop ${uid}`)
+  l.cmd('/stop', uid)
   db.log(uid, 0)
 
   await db.unsubscribe(uid)
