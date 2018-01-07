@@ -6,7 +6,7 @@
   "author": "xamgore <xamgore@ya.ru>",
   "license": "MIT",
   "scripts": {
-    "start": "node ./index.js"
+    "start": "nodemon --ignore *.sqlite ./index.js"
   },
   "dependencies": {
     "babel-eslint": "^7.2.3",
@@ -26,6 +26,7 @@
     "lowdb": "^0.16.2",
     "moment": "^2.20.1",
     "node-cleanup": "^2.1.2",
+    "nodemon": "^1.14.8",
     "osmosis": "^1.1.6",
     "sqlite3-wrapper": "^1.0.2",
     "telegraf": "^3.17.2"
