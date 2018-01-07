@@ -5,4 +5,7 @@ const w = (...args) => console.warn(`${ch.white.bgBlue('i')}`, ...args)
 const e = (...args) => console.error(`${ch.white.bgRed('E')}`, ...args)
 const cmd = (c, ...args) => console.log(`\n${ch.magentaBright(c)}`, ...args)
 
-export default { i, w, e, cmd }
+const user = from =>
+  `${from.username ? `@${from.username}` : from.first_name} (${from.id})`
+
+export default { i, w, e, cmd, user }

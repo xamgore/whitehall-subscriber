@@ -14,9 +14,9 @@ bot.telegram.getMe().then((botInfo) => {
 
 
 bot.start(async (ctx) => {
-  const uid = ctx.from.id
+  l.cmd('/start', l.user(ctx.from))
 
-  l.cmd('/start', uid)
+  const uid = ctx.from.id
   db.log(uid, 1)
 
   let user = await db.getUser(uid)
@@ -43,7 +43,7 @@ bot.start(async (ctx) => {
 
 
 bot.command('info', (ctx) => {
-  l.cmd('/chatid', ctx.from.id)
+  l.cmd('/chatid', l.user(ctx.from))
   if (ctx.from.username !== 'xamgore') return
 
   // eslint-disable-next-line
@@ -52,7 +52,7 @@ bot.command('info', (ctx) => {
 
 
 bot.command('broadcast', (ctx) => {
-  l.cmd('/broadcast', ctx.from.id)
+  l.cmd('/broadcast', l.user(ctx.from))
   if (ctx.from.username !== 'xamgore') return
 
   whitehall.fetchAndBroadcast()
@@ -60,9 +60,9 @@ bot.command('broadcast', (ctx) => {
 
 
 bot.action('fetch news', async (ctx) => {
-  const uid = ctx.from.id
+  l.cmd('/more news', l.user(ctx.from))
 
-  l.cmd('/more news', uid, ctx.from.username)
+  const uid = ctx.from.id
   db.log(uid, 3)
 
   l.i('Send news')
@@ -71,9 +71,9 @@ bot.action('fetch news', async (ctx) => {
 
 
 bot.command('stop', async (ctx) => {
-  const uid = ctx.from.id
+  l.cmd('/stop', l.user(ctx.from))
 
-  l.cmd('/stop', uid)
+  const uid = ctx.from.id
   db.log(uid, 0)
 
   await db.unsubscribe(uid)
