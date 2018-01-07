@@ -1,0 +1,72 @@
+# parse all pages except the root page
+?path: /.+
+
+
+$header: //div[has-class("main-title")]
+title: $header//h1
+
+body: //div[has-class("con-inf-sect")]
+description: $body//p[0]
+
+
+# set an image for preview
+$cover: //div[has-class("frame")]//img[@src != "/upload/empty.jpg"]/@src
+$cover?: (//div[has-class("photo")]//figure)[last()]/a/@href
+image_url: $cover
+
+
+# set original link
+share_page: $body//div[has-class("share-page")]
+share_heading: $share_page//div[has-class("share-heading")]
+@replace("Поделиться записью", "На страницу покупки билетов"): $share_heading/text()
+@wrap(<a>): $share_heading
+@set_attr(href, "#"): $share_page/a
+@prepend(<hr>): $share_page
+
+# remove messy paragraphs
+@remove: $body//p[contains(text(), '  ')]
+@remove: $body//p[normalize-space() = '']
+@remove: $body//p[contains(text(), 'Буфет')]
+
+# remove "photo" title
+photo_par_title: //div[has-class("photo")]/div[has-class("title")]
+@before(<br>): $photo_par_title
+@remove: $photo_par_title
+
+
+# mark titles by bold tag
+list: //ul[has-class("con-inf")]
+@wrap(<strong>): $list/li/div[1]
+@before(<br>): $list/li/strong[1]
+@replace_tag(<div>): $list
+
+
+# add "rubles" text to the price
+schedule: //ul[has-class("con-table")]
+price: $schedule/li[last()]/div[last()]
+@append_to($price): "₽"
+
+# parse date
+event_date: $schedule/li[1]/div[last()]
+event_time: $schedule/li[2]/div[last()]
+
+@after(<code>): $schedule
+date_block: $schedule/next-sibling::code
+@append_to($date_block): $event_date
+@append_to($date_block): ", "
+@append_to($date_block): $event_time
+
+@datetime(0):  $date_block
+published_date: $@   # the property published_date will hold a unixtime timestamp
+@remove: $date_block
+
+@append_to($event_time): " |"
+@remove: $price/svg
+@append_to($event_time): $price/text()
+author: $event_time
+
+@remove: $schedule
+
+
+# improve quality
+@set_attr(src, ./../@href): //div[has-class("photo")]//figure//img
