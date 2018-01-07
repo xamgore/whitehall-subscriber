@@ -60,14 +60,13 @@ bot.command('broadcast', (ctx) => {
 
 
 bot.action('fetch news', async (ctx) => {
-  l.cmd('/more news', ctx.from.id)
-  l.i('Send news')
-  await whitehall.fetchAndSend(ctx.from.id)
+  const uid = ctx.from.id
 
-  // l.i('Remove callback button')
-  // const q = ctx.callbackQuery
-  // await bot.telegram.editMessageReplyMarkup(
-  //   q.message.chat.id, q.message.message_id, q.id, mk.inlineKeyboard([]))
+  l.cmd('/more news', uid, ctx.from.username)
+  db.log(uid, 3)
+
+  l.i('Send news')
+  await whitehall.fetchAndSend(uid)
 })
 
 
