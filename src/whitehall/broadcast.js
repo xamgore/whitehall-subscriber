@@ -45,11 +45,13 @@ let fetchAndSend = async (uid) => {
 
 
 let fetchAndBroadcast = async () => {
-  console.log('broadcast!')
   let users = await db.getActiveUsers()
+  l.i(`Users: ${users.length}`)
   let events = await fetchEvents()
-  console.log(`${users.length} users, ${events.length} events`)
-  return Promise.all(users.map(u => send(u.uid, events)))
+  l.i(`Events: ${events.length}`)
+
+  await Promise.all(users.map(u => send(u.uid, events)))
+  l.i('Broadcast finished')
 }
 
 

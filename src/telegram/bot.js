@@ -6,6 +6,7 @@ import whitehall from '../whitehall/broadcast'
 const bot = new Bot(process.env.BOT_TOKEN)
 const mk = Bot.Markup
 
+
 // set bot's username for handling commands in groups
 bot.telegram.getMe().then((botInfo) => {
   bot.options.username = botInfo.username
@@ -47,6 +48,14 @@ bot.command('info', (ctx) => {
 
   // eslint-disable-next-line
   ctx.replyWithMarkdown('```\n' + JSON.stringify(ctx.message, null, 2) + '\n```')
+})
+
+
+bot.command('broadcast', (ctx) => {
+  l.cmd('/broadcast', ctx.from.id)
+  if (ctx.from.username !== 'xamgore') return
+
+  whitehall.fetchAndBroadcast()
 })
 
 

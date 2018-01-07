@@ -30,8 +30,8 @@ export default {
       [u.uid, u.is_active, u.name, u.nick])
   },
 
-  getUsers: () => select({ table: 'users', where: { is_active: true } }),
-  getUser:  uid => select({ table: 'users', where: { uid } })
+  getActiveUsers: () => select({ table: 'users', where: { is_active: true } }),
+  getUser:        uid => select({ table: 'users', where: { uid } })
     .then(r => r.concat(null)[0]),
 
   async create() {
