@@ -28,7 +28,7 @@ bot.start(async (ctx) => {
   if (!user) {
     l.w('User is not registered')
     user = { uid, name: ctx.from.first_name, nick: ctx.from.username }
-    await db.subscribe(user)
+    await db.register(user)
   } else {
     l.i('User has sent "/stop" previously')
     db.markActive(uid)

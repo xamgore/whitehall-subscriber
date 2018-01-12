@@ -23,7 +23,7 @@ export default {
 
   markActive:  uid => update('users', { uid }, { is_active: true }),
   unsubscribe: uid => update('users', { uid }, { is_active: false }),
-  subscribe:   (u) => {
+  register:    (u) => {
     u.is_active = true
     return run('INSERT OR REPLACE INTO users(\
       uid, is_active, name, nick) VALUES ((?), (?), (?), (?))',
