@@ -19,15 +19,18 @@ bot.start(async (ctx) => {
   const uid = ctx.from.id
   db.log(uid, 1)
 
-  let user = await db.getUser(uid)
+  let res = await db.getUser(uid)
+  let user = { uid, ...res, name: ctx.from.first_name, nick: ctx.from.username }
 
-  if (user && user.is_active)
-    return l.i('User is registered and active, nothing to do') ||
-      ctx.reply('Вы уже подписаны на рассылку, всё ок')
+  if (res && user.is_active) {
+    l.i('User is registered and active, nothing to do')
+    ctx.reply('Вы уже подписаны на рассылку, всё ок')
+    l.i('Update user info')
+    return db.updateInfo(user)
+  }
 
-  if (!user) {
+  if (!res) {
     l.w('User is not registered')
-    user = { uid, name: ctx.from.first_name, nick: ctx.from.username }
     await db.register(user)
   } else {
     l.i('User has sent "/stop" previously')
@@ -64,6 +67,12 @@ bot.action('fetch news', async (ctx) => {
 
   const uid = ctx.from.id
   db.log(uid, 3)
+  db.updateInfo({
+    uid,
+    is_active: ctx.chat.type === 'private',
+    name:      ctx.from.first_name,
+    nick:      ctx.from.username,
+  })
 
   l.i('Send news')
   await whitehall.fetchAndSend(uid)
@@ -75,6 +84,7 @@ bot.command('stop', async (ctx) => {
 
   const uid = ctx.from.id
   db.log(uid, 0)
+  db.updateInfo({ uid, name: ctx.from.first_name, nick: ctx.from.username })
 
   await db.unsubscribe(uid)
   l.i('User is unsubscribed')
