@@ -9,10 +9,6 @@ module.exports = {
   extends: 'airbnb-base',
   // add your custom rules here
   'rules': {
-    // don't require .vue extension when importing
-    'import/extensions': ['error', 'always', {
-      'js': 'never'
-    }],
     // allow debugger during development
     'no-debugger': process.env.NODE_ENV === 'production' ? 2 : 0,
     'no-console': 0,
@@ -32,6 +28,8 @@ module.exports = {
     'no-unused-expressions': 0,
     'no-param-reassign': 0,
     'consistent-return': 0,
-    'no-continue': 0
+    'no-continue': 0,
+    'object-curly-newline': 0,
+    'function-paren-newline': 0,
   }
 }

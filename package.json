@@ -6,7 +6,8 @@
   "author": "xamgore <xamgore@ya.ru>",
   "license": "MIT",
   "scripts": {
-    "start": "nodemon --ignore *.sqlite ./index.js"
+    "start": "nodemon --ignore *.sqlite ./index.js",
+    "lint": "eslint ./**/*.js --ignore node_modules"
   },
   "dependencies": {
     "babel-eslint": "^8.2.1",
