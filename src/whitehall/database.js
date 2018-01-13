@@ -1,8 +1,9 @@
 import sqlite from 'sqlite3-wrapper'
 import onExit from '../exit'
-import util from 'util'
+import promisify from 'es6-promisify'
 
 
+const util = { promisify }
 const db = sqlite.open('./db.sqlite')
 
 // close db connection in case of sudden errors

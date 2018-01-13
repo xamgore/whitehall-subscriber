@@ -2,10 +2,13 @@ require('babel-polyfill')
 require('babel-register')({
   presets: ['env'],
   plugins: ['transform-object-rest-spread', 'add-module-exports'],
+  // compact: true,
+  only:    /(src|node_modules\/telegraf)/,
 })
 
 
-let fs = require('fs')
+// eslint-disable-next-line
+var fs = require('fs')
 
 if (!fs.existsSync('.env'))
   fs.writeFileSync('.env', fs.readFileSync('.env.example'))
