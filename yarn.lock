@@ -72,6 +72,16 @@ acorn@^5.2.1:
   version "5.3.0"
   resolved "https://registry.yarnpkg.com/acorn/-/acorn-5.3.0.tgz#7446d39459c54fb49a80e6ee6478149b940ec822"
 
+aigle-core@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/aigle-core/-/aigle-core-1.0.0.tgz#4066e0f9a5c60996d8377ed196a21fa17b6250ab"
+
+aigle@^1.10.1:
+  version "1.10.1"
+  resolved "https://registry.yarnpkg.com/aigle/-/aigle-1.10.1.tgz#d47971ef70cc90d4f7f0a50ccefebd86930b060e"
+  dependencies:
+    aigle-core "^1.0.0"
+
 ajv-keywords@^2.1.0:
   version "2.1.1"
   resolved "https://registry.yarnpkg.com/ajv-keywords/-/ajv-keywords-2.1.1.tgz#617997fc5f60576894c435f940d819e135b80762"

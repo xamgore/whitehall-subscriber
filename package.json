@@ -10,6 +10,7 @@
     "lint": "eslint ./**/*.js --ignore node_modules"
   },
   "dependencies": {
+    "aigle": "^1.10.1",
     "babel-eslint": "^8.2.1",
     "babel-plugin-add-module-exports": "^0.2.1",
     "babel-plugin-transform-object-rest-spread": "^6.23.0",
@@ -24,6 +25,7 @@
     "eslint-config-airbnb-base": "^12.1.0",
     "eslint-friendly-formatter": "^3.0.0",
     "eslint-plugin-import": "^2.2.0",
+    "lodash": "^4.17.4",
     "lowdb": "^1.0.0",
     "moment": "^2.20.1",
     "node-cleanup": "^2.1.2",

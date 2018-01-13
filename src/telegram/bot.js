@@ -62,8 +62,8 @@ bot.command('broadcast', (ctx) => {
 })
 
 
-bot.action('fetch news', async (ctx) => {
-  l.cmd('/more news', l.user(ctx.from))
+const fetchNews = async (ctx) => {
+  l.cmd('/fetch', l.user(ctx.from))
 
   const uid = ctx.from.id
   db.log(uid, 3)
@@ -76,7 +76,11 @@ bot.action('fetch news', async (ctx) => {
 
   l.i('Send news')
   await whitehall.fetchAndSend(uid)
-})
+}
+
+
+bot.action('fetch news', fetchNews)
+bot.command('fetch', fetchNews)
 
 
 bot.command('stop', async (ctx) => {

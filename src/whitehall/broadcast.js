@@ -1,39 +1,38 @@
 import l from '../log'
+import __ from 'aigle'
+import lodash from 'lodash'
 import db from './database'
 import tm from '../telegram/client'
 import fetchEvents from './scrapper'
 import Bot from 'telegraf'
 
-const mk = Bot.Markup
 
+__.mixin(lodash)
+
+const mk = Bot.Markup
 
 const url = page => process.env.LINK.replace('{}', encodeURI(page))
 
-const sleep = ms => new Promise(resolve => setTimeout(resolve, ms))
-
 
 let send = async (user, events) => {
-  let count = 1
+  __
+    .chain(events)
+    .reject(e => db.hasRead(user, e.link).then(r => r.length))
+    .take(3) // posts per day
+    .each(async (e, i, total) => {
+      const msg = `[${e.title}](${url(e.link)})`
+      const notLast = i !== total.length - 1
 
-  for (let e of events) {
-    const read = await db.hasRead(user, e.link)
-    if (read.length) continue
+      await tm.sendMessage(user, msg, {
+        parse_mode:   'Markdown',
+        reply_markup: mk.inlineKeyboard([
+          mk.callbackButton('Загрузить ещё концерты', 'fetch news', notLast),
+        ]),
+      })
 
-    const msg = `[${e.title}](${url(e.link)})`
-
-    await tm.sendMessage(user, msg, {
-      parse_mode:   'Markdown',
-      reply_markup: mk.inlineKeyboard([
-        mk.callbackButton('Загрузить ещё концерты', 'fetch news', count !== 4),
-      ]),
+      db.markRead(user, e.link)
+      await __.delay(1000)
     })
-
-    await db.markRead(user, e.link)
-    await sleep(2000)
-
-    // not more than 4 posts per day
-    if (count++ >= 4) return
-  }
 }
 
 

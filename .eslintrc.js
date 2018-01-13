@@ -31,5 +31,6 @@ module.exports = {
     'no-continue': 0,
     'object-curly-newline': 0,
     'function-paren-newline': 0,
+    'no-return-await': 0,
   }
 }
