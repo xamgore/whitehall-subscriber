@@ -9,7 +9,7 @@ import log from './log'
 db.create()
   .then(() => {
     let jobs = [
-      new cron.CronJob('0 0 11 * * *', whitehall.fetchAndBroadcast),
+      // new cron.CronJob('0 0 11 * * *', whitehall.fetchAndBroadcast),
       new cron.CronJob('0 0 21 * * *', whitehall.fetchAndBroadcast),
     ]
 
