@@ -3,7 +3,7 @@ require('babel-register')({
   presets: ['env'],
   plugins: ['transform-object-rest-spread', 'add-module-exports'],
   // compact: true,
-  only:    /(src|node_modules\/telegraf)/,
+  only:    /(src|node_modules\/telegraf|node_modules\/aigle)/,
 })
 
 
