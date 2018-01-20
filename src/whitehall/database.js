@@ -39,7 +39,7 @@ export default {
   async create() {
     const queries = [
       'CREATE TABLE IF NOT EXISTS users(uid INT PRIMARY KEY, is_active INT NOT NULL DEFAULT 1, name TEXT, nick TEXT)',
-      'CREATE TABLE IF NOT EXISTS journal(uid INT NOT NULL, event TEXT NOT NULL, UNIQUE (uid, event))',
+      'CREATE TABLE IF NOT EXISTS journal(date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, uid INT NOT NULL, event TEXT NOT NULL, UNIQUE (uid, event))',
       'CREATE TABLE IF NOT EXISTS log(date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, uid INT NOT NULL, type INT NOT NULL)',
     ]
 
