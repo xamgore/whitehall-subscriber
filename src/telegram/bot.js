@@ -1,10 +1,11 @@
 import l from '../log'
 import Bot from 'telegraf'
+import tm from '../telegram/client'
 import db from '../whitehall/database'
+import { stripIndent } from 'common-tags'
 import whitehall from '../whitehall/broadcast'
 
 const bot = new Bot(process.env.BOT_TOKEN)
-const mk = Bot.Markup
 
 
 // set bot's username for handling commands in groups
@@ -45,12 +46,26 @@ bot.start(async (ctx) => {
 })
 
 
-bot.command('info', (ctx) => {
+bot.command('chatid', (ctx) => {
   l.cmd('/chatid', l.user(ctx.from))
   if (ctx.from.username !== 'xamgore') return
 
   // eslint-disable-next-line
   ctx.replyWithMarkdown('```\n' + JSON.stringify(ctx.message, null, 2) + '\n```')
+})
+
+
+bot.command('admin', async (ctx) => {
+  l.cmd('/admin', l.user(ctx.from))
+  if (ctx.from.username !== 'xamgore') return
+
+  const msg = await ctx.replyWithMarkdown(stripIndent`
+    /chatid — get the chat's info
+    /fetch — send news to the chat
+    /broadcast — send news to everybody
+  `)
+
+  tm.deleteMessage(`${msg.chat.id}`, `${msg.message_id}`)
 })
 
 
