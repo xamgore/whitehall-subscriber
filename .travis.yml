@@ -1,0 +1,21 @@
+language: node_js
+node_js: "node"
+
+cache:
+  yarn: true
+  directories:
+    - node_modules
+
+addons:
+  ssh_known_hosts: users.mmcs.sfedu.ru
+
+script:
+  - node ./node_modules/eslint/bin/eslint.js -c .eslintrc.js --ignore node_modules ./
+
+after_script:
+  - openssl aes-256-cbc -K $encrypted_155c791d04b2_key -iv $encrypted_155c791d04b2_iv
+    -in deploy_rsa.enc -out deploy_rsa -d
+  - eval "$(ssh-agent -s)"
+  - chmod 600 deploy_rsa
+  - ssh-add deploy_rsa
+  - bash -c '[[ "$TRAVIS_BRANCH" == "master" ]] && ssh -t xamgore@users.mmcs.sfedu.ru "cd whitehall-subscriber && git fetch --all && git reset --hard origin/master"'

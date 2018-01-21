@@ -6,8 +6,7 @@
   "author": "xamgore <xamgore@ya.ru>",
   "license": "MIT",
   "scripts": {
-    "start": "nodemon --ignore *.sqlite ./index.js",
-    "lint": "eslint ./**/*.js --ignore node_modules"
+    "start": "nodemon --ignore *.sqlite ./index.js"
   },
   "dependencies": {
     "aigle": "^1.10.1",
