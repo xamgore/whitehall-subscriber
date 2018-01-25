@@ -107,7 +107,8 @@ const cmd = _.mapKeys({
 
 
 const mkKeyboard = cmds => ({
-  reply_markup: mk.oneTime().resize().keyboard(cmds.map(c => mk.button(c.text))),
+  reply_markup: mk.oneTime().resize()
+    .keyboard(cmds.map(c => mk.button(c.text)), { columns: 2 }),
 })
 
 menu = _.mapValues({
