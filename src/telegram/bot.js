@@ -19,10 +19,11 @@ const cmd = _.mapKeys({
 
       let res = await db.getUser(uid)
       let user = { uid, ...res, name: ctx.from.first_name, nick: ctx.from.username }
+      let keyboard = user.nick === 'xamgore' ? menu.admin : menu.main
 
       if (res && user.is_active) {
         l.i('User is registered and active, nothing to do')
-        ctx.reply('✅ Вы уже подписаны на рассылку', menu.main)
+        ctx.reply('✔️ Вы уже подписаны на рассылку', keyboard)
         l.i('Update user info')
         return db.updateInfo(user)
       }
@@ -35,7 +36,7 @@ const cmd = _.mapKeys({
         db.markActive(uid)
       }
 
-      await ctx.reply('✅ Теперь вы будете получать рассылку', menu.main)
+      await ctx.reply('✅ Теперь вы будете получать рассылку', keyboard)
         .then(() => l.i('Send a notification'))
 
       l.i('Send news')
@@ -111,8 +112,8 @@ const mkKeyboard = cmds => ({
 
 menu = _.mapValues({
   start: [cmd.start],
-  main:  [cmd.settings, cmd.stop],
-  admin: [cmd.chatid, cmd.fetch, cmd.broadcast, cmd.back],
+  main:  [cmd.stop],
+  admin: [cmd.chatid, cmd.fetch, cmd.broadcast, cmd.stop],
 }, mkKeyboard)
 
 
@@ -124,25 +125,14 @@ bot.telegram.getMe().then((botInfo) => {
 
 // attach each menu action to bot
 _.values(cmd).forEach(c => bot.hears(c.text, (ctx) => {
-  if ('admin' in c && c.admin === true && ctx.from.username !== 'xamgore')
-    return
-
   l.cmd(`/${c.name}`, l.user(ctx.from))
-  c.call(ctx)
+  if (!c.admin || ctx.from.username === 'xamgore')
+    c.call(ctx)
 }))
 
 
 // called on the first user's interaction
 bot.start(cmd.start.call)
-
-
-// a hidden commands for admin
-bot.command('admin', async (ctx) => {
-  l.cmd('/admin', l.user(ctx.from))
-  ctx.from.username === 'xamgore'
-    ? ctx.reply('👋🏻 о, админ', menu.admin)
-    : ctx.reply('🖕🏻сюда нельзя')
-})
 
 
 // is called when "more results" button is pressed
