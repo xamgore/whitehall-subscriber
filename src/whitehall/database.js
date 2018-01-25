@@ -16,8 +16,15 @@ const update = util.promisify(db.update)
 const run = util.promisify(db.database().run.bind(db.database()))
 
 
+const logTypes = {
+  stop:  0,
+  start: 1,
+  fetch: 3,
+}
+
+
 export default {
-  log: (uid, type) => insert('log', { uid, type }),
+  log: (uid, type) => insert('log', { uid, type: logTypes[type] }),
 
   hasRead:  (uid, event) => select({ table: 'journal', where: { uid, event } }),
   markRead: (uid, event) => insert('journal', { uid, event }),

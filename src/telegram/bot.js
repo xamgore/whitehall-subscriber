@@ -15,7 +15,7 @@ const cmd = _.mapKeys({
     text: '✔️ Подписаться на рассылку',
     async call(ctx) {
       const uid = ctx.from.id
-      db.log(uid, 1)
+      db.log(uid, 'start')
 
       let res = await db.getUser(uid)
       let user = { uid, ...res, name: ctx.from.first_name, nick: ctx.from.username }
@@ -61,7 +61,7 @@ const cmd = _.mapKeys({
     text: '⛔️ Отписаться',
     async call(ctx) {
       const uid = ctx.from.id
-      db.log(uid, 0)
+      db.log(uid, 'stop')
       db.updateInfo({ uid, name: ctx.from.first_name, nick: ctx.from.username })
 
       await db.unsubscribe(uid)
@@ -84,7 +84,7 @@ const cmd = _.mapKeys({
     admin: true,
     async call(ctx) {
       const uid = ctx.from.id
-      db.log(uid, 3)
+      db.log(uid, 'fetch')
       db.updateInfo({
         uid,
         is_active: ctx.chat.type === 'private',
