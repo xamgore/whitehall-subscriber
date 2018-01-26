@@ -10,44 +10,37 @@ const mk = Bot.Markup
 
 let menu = {}
 
+const mainMenu = ctx => (
+  ctx.from.username === 'xamgore' && ctx.chat.type === 'private'
+    ? menu.admin : menu.main)
+
 const cmd = _.mapKeys({
   start: {
     text: '✔️ Подписаться на рассылку',
     async call(ctx) {
-      const uid = ctx.from.id
-      db.log(uid, 'start')
+      const chatid = ctx.chat.id
+      let res = await db.chat(chatid).get()
 
-      let res = await db.getUser(uid)
-      let user = { uid, ...res, name: ctx.from.first_name, nick: ctx.from.username }
-      let keyboard = user.nick === 'xamgore' ? menu.admin : menu.main
-
-      if (res && user.is_active) {
+      if (res && res.is_active) {
         l.i('User is registered and active, nothing to do')
-        ctx.reply('✔️ Вы уже подписаны на рассылку', keyboard)
-        l.i('Update user info')
-        return db.updateInfo(user)
+        return ctx.reply('✔️ Вы уже подписаны на рассылку', mainMenu(ctx))
       }
 
-      if (!res) {
-        l.w('User is not registered')
-        await db.register(user)
-      } else {
-        l.i('User has sent "/stop" previously')
-        db.markActive(uid)
-      }
+      await db.chat(chatid).saveInfo({ type: ctx.chat.type })
+      l.i(res ? 'Chat was deactivated previously' : 'Chat is not registered')
 
-      await ctx.reply('✅ Теперь вы будете получать рассылку', keyboard)
+      await ctx.reply('✅ Теперь вы будете получать рассылку', mainMenu(ctx))
         .then(() => l.i('Send a notification'))
 
       l.i('Send news')
-      await whitehall.fetchAndSend(uid)
+      await whitehall.fetchAndSend(chatid)
     },
   },
 
   back: {
     text: '⬅️ Назад',
     async call(ctx) {
-      ctx.reply('Ок', menu.main)
+      ctx.reply('Ок', mainMenu(ctx))
     },
   },
 
@@ -61,12 +54,9 @@ const cmd = _.mapKeys({
   stop: {
     text: '⛔️ Отписаться',
     async call(ctx) {
-      const uid = ctx.from.id
-      db.log(uid, 'stop')
-      db.updateInfo({ uid, name: ctx.from.first_name, nick: ctx.from.username })
+      await db.chat(ctx.chat.id).markActive(false)
 
-      await db.unsubscribe(uid)
-      l.i('User is unsubscribed')
+      l.i('Chat was unsubscribed')
       ctx.reply('Вы больше не будете получать рассылку', menu.start)
     },
   },
@@ -74,28 +64,15 @@ const cmd = _.mapKeys({
   chatid: {
     admin: true,
     text:  '❓Где я',
-    async call(ctx) {
+    call:  ctx =>
       // eslint-disable-next-line
-      ctx.replyWithMarkdown('```\n' + JSON.stringify(ctx.message, null, 2) + '\n```')
-    },
+      ctx.replyWithMarkdown('```\n' + JSON.stringify(ctx.message, null, 2) + '\n```'),
   },
 
   fetch: {
     text:  '📬 Фетч',
     admin: true,
-    async call(ctx) {
-      const uid = ctx.from.id
-      db.log(uid, 'fetch')
-      db.updateInfo({
-        uid,
-        is_active: ctx.chat.type === 'private',
-        name:      ctx.from.first_name,
-        nick:      ctx.from.username,
-      })
-
-      l.i('Send news')
-      await whitehall.fetchAndSend(uid, menu.main)
-    },
+    call:  ctx => whitehall.fetchAndSend(ctx.chat.id),
   },
 
   broadcast: {
@@ -107,7 +84,7 @@ const cmd = _.mapKeys({
 
 
 const mkKeyboard = cmds => ({
-  reply_markup: mk.oneTime().resize()
+  reply_markup: mk.resize()
     .keyboard(cmds.map(c => mk.button(c.text)), { columns: 2 }),
 })
 
@@ -124,9 +101,17 @@ bot.telegram.getMe().then((botInfo) => {
 })
 
 
-// attach each menu action to bot
+// attach each menu action to the bot
 _.values(cmd).forEach(c => bot.hears(c.text, (ctx) => {
   l.cmd(`/${c.name}`, l.user(ctx.from))
+  db.log(ctx.from.id, ctx.chat.id, c.name)
+
+  db.user({
+    uid:  ctx.from.id,
+    name: ctx.from.first_name,
+    nick: ctx.from.username,
+  }).saveInfo()
+
   if (!c.admin || ctx.from.username === 'xamgore')
     c.call(ctx)
 }))

@@ -14,42 +14,39 @@ const mk = Bot.Markup
 const url = page => process.env.LINK.replace('{}', encodeURI(page))
 
 
-let send = async (user, events) => {
+let send = async (chatid, events) => {
   __
     .chain(events)
-    .reject(e => db.hasRead(user, e.link).then(r => r.length))
+    .reject(e => db.event(e.link).wasReadBy(chatid))
     .take(3) // posts per day
     .each(async (e, i, total) => {
+      await __.delay(1000 * i)
+
       const msg = `[${e.title}](${url(e.link)})`
       const notLast = i !== total.length - 1
 
-      await tm.sendMessage(user, msg, {
+      await tm.sendMessage(chatid, msg, {
         parse_mode:   'Markdown',
         reply_markup: mk.inlineKeyboard([
           mk.callbackButton('Загрузить ещё концерты', 'fetch news', notLast),
         ]),
       })
 
-      db.markRead(user, e.link)
-      await __.delay(1000)
+      db.event(e.link).add(chatid)
     })
 }
 
 
-let fetchAndSend = async (uid) => {
-  l.i('Fetch news')
-  let events = await fetchEvents()
-  return send(uid, events)
-}
+let fetchAndSend = async chatid => send(chatid, await fetchEvents())
 
 
 let fetchAndBroadcast = async () => {
-  let users = await db.getActiveUsers()
-  l.i(`Users: ${users.length}`)
+  let chats = await db.getActiveChats()
+  l.w(`Active chats: ${chats.length}`)
   let events = await fetchEvents()
-  l.i(`Events: ${events.length}`)
+  l.w(`Events: ${events.length}`)
 
-  await Promise.all(users.map(u => send(u.uid, events)))
+  await Promise.all(chats.map(ch => send(ch.id, events)))
   l.i('Broadcast finished')
 }
 
