@@ -1,6 +1,7 @@
 import osmos from 'osmosis'
 import moment from 'moment'
 import run from './runner'
+import l from '../log'
 
 const getEventsOn = date =>
   run(osmos
@@ -19,10 +20,11 @@ const getEventsOn = date =>
 
 
 const getAll = async () => {
+  l.i('Run scrapper')
   let date = moment()
 
   let result = []
-  for (let i = 1; i <= 2; i++, date.add(1, 'month')) {
+  for (let i = 1; i <= 2; i++, date.startOf('month').add(1, 'month')) {
     result.push(...await getEventsOn(date.format('YYYY-MM-DD')))
   }
 
