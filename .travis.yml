@@ -18,4 +18,4 @@ after_script:
   - eval "$(ssh-agent -s)"
   - chmod 600 deploy_rsa
   - ssh-add deploy_rsa
-  - bash -c '[[ "$TRAVIS_BRANCH" == "master" ]] && ssh -t xamgore@users.mmcs.sfedu.ru "cd whitehall-subscriber && git fetch --all && git reset --hard origin/master"'
+  - bash -c '[[ "$TRAVIS_BRANCH" == "master" ]] && ssh -t xamgore@users.mmcs.sfedu.ru "bash -s" < deploy.sh'
