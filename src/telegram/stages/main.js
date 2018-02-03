@@ -7,7 +7,6 @@ import broadcast from '../commands/broadcast'
 import channel from '../commands/channel'
 import fetch from '../commands/fetch'
 import settings from '../commands/settings'
-import l from '../../log'
 
 
 const cmds = [chatid, channel, fetch, broadcast, settings, stop]
@@ -21,7 +20,7 @@ scene.command('lol', ctx => ctx.reply('lol'))
 
 const isAdmin = ctx => ctx.from.username === 'xamgore' && ctx.chat.type === 'private'
 
-const menu = ctx => mkKeyboard(isAdmin(ctx) ? cmds : [stop])
+const menu = ctx => mkKeyboard(isAdmin(ctx) ? cmds : [settings, stop])
 
 
 export default { scene, menu }
