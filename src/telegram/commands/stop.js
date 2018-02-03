@@ -1,6 +1,6 @@
 import db from '../../whitehall/database'
-import guest from '../stages/guest'
 import l from '../../log'
+import main from '../stages/main'
 
 export default {
   name: 'stop',
@@ -9,7 +9,7 @@ export default {
     await db.chat(ctx.chat.id).markActive(false)
 
     l.i('Chat was unsubscribed')
-    ctx.reply('Вы больше не будете получать рассылку', guest.menu(ctx))
-    ctx.scene.enter('guest')
+    ctx.reply('Вы больше не будете получать рассылку', await main.menu(ctx))
+    ctx.scene.enter('main')
   },
 }

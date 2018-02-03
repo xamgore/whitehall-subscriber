@@ -18,7 +18,7 @@ scene.enter(async (ctx) => {
     'Изображения и стикеры пока что не поддерживаются.', menu())
 })
 
-scene.leave(ctx => ctx.reply('Спасибо за внимание', main.menu(ctx)))
+scene.leave(async ctx => ctx.reply('Спасибо за внимание', await main.menu(ctx)))
 
 scene.commands([feedback, back(ctx => ctx.scene.enter('main'))])
 

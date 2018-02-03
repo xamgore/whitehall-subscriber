@@ -22,8 +22,8 @@ scene.enter(async (ctx) => {
   l.i(`Chats: ${chats.length}`)
 })
 
-scene.leave((ctx) => {
-  ctx.reply('Режим выключен', main.menu(ctx))
+scene.leave(async (ctx) => {
+  ctx.reply('Режим выключен', await main.menu(ctx))
 })
 
 scene.commands([back(ctx => ctx.scene.enter('main'))])
