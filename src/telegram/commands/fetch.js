@@ -1,8 +1,7 @@
 import whitehall from '../../whitehall/broadcast'
 
 export default {
-  name:  'fetch',
-  text:  '📬 Фетч',
-  admin: true,
-  call:  ctx => whitehall.fetchAndSend(ctx.chat.id),
+  name: 'fetch',
+  text: '📬 Афиша',
+  call: ctx => whitehall.fetchAndSend(ctx.chat.id),
 }

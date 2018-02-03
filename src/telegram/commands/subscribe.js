@@ -6,7 +6,7 @@ import main from '../stages/main'
 
 export default {
   name: 'start',
-  text: '✔️ Подписаться на рассылку',
+  text: '✔️ Подписаться', // на рассылку
   async call(ctx) {
     const chatid = ctx.chat.id
     let res = await db.chat(chatid).get()
@@ -21,7 +21,7 @@ export default {
     l.i(res ? 'Chat was deactivated previously' : 'Chat is not registered')
 
     l.i('Send a notification')
-    await ctx.reply('✅ Теперь вы будете получать рассылку', await main.menu(ctx))
+    await ctx.reply('✅ Теперь вы будете получать рассылку, вечером раз в день', await main.menu(ctx))
     ctx.scene.enter('main')
 
     l.i('Send news')

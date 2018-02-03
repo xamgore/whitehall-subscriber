@@ -1,5 +1,5 @@
 export default {
   name: 'feedback',
-  text: '💁🏻‍♀ Оставить отзыв',
+  text: '💁🏻‍♀ Отзыв',
   call: ctx => ctx.scene.enter('feedback'),
 }

@@ -13,8 +13,8 @@ import feedback from '../commands/feedback'
 import subscribe from '../commands/subscribe'
 
 
-const adminCmds = [chatid, channel, fetch, broadcast, settings]
-const userCmds = [settings, feedback]
+const adminCmds = [broadcast, fetch, settings, channel, chatid]
+const userCmds = [fetch, settings, feedback]
 
 const isAdmin = ctx => ctx.from.username === 'xamgore' && ctx.chat.type === 'private'
 const personalizedCmds = ctx => (isAdmin(ctx) ? adminCmds : userCmds)
@@ -31,7 +31,7 @@ scene.commands(_.unionBy([subscribe, stop], adminCmds, userCmds, cmd => cmd.name
 
 
 const menu = async ctx => mkKeyboard(_.concat(
-  personalizedCmds(ctx), await subscribeOrNot(ctx)))
+  await subscribeOrNot(ctx), personalizedCmds(ctx)))
 
 
 export default { scene, menu }
