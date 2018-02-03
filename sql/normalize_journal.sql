@@ -1,7 +1,11 @@
 -- normalized log
 SELECT
-  nick, name, event, date, is_active
+  nick,
+  name,
+  type as chat_type,
+  is_active as is_active,
+  url
+  --, journal.date -- TODO
 FROM journal
-  JOIN users ON journal.uid = users.uid
-ORDER BY date
-  DESC;
+  JOIN chats ON journal.chatid = chats.id
+  LEFT JOIN users ON users.uid = chats.id;

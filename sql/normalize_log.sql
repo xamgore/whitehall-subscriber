@@ -3,14 +3,19 @@ SELECT
   date,
   name,
   nick,
-  CASE WHEN type = 0
+  CASE
+  WHEN log.type = 0
     THEN '/stop'
-  WHEN type = 1
+  WHEN log.type = 1
     THEN '/start'
-  WHEN type = 3
+  WHEN log.type = 3
     THEN '/more'
-  END AS cmd
+  ELSE log.type
+  END AS cmd,
+  chatid,
+  chats.type
 FROM log
+  JOIN chats ON log.chatid = chatid
   JOIN users ON log.uid = users.uid
 ORDER BY date
-  DESC;
+DESC;
