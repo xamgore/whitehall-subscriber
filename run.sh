@@ -1,3 +1,3 @@
 #!/bin/bash
-ps -ef | grep -v grep | grep whitehall-subscriber > /dev/null
-(( $? )) && { nohup npm start </dev/null &; }
+pkill whitehall -f
+nohup npm start </dev/null >/dev/null 2>/dev/null &
