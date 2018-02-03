@@ -5,6 +5,7 @@ import Stage from 'telegraf/stage'
 import guest from './stages/guest'
 import main from './stages/main'
 import channel from './stages/channel'
+import feedback from './stages/feedback'
 
 import start from './commands/start'
 import fetch from './commands/fetch'
@@ -20,7 +21,7 @@ bot.telegram.getMe().then((botInfo) => {
 })
 
 // Create scene manager
-const stage = new Stage([guest.scene, main.scene, channel.scene])
+const stage = new Stage([guest.scene, main.scene, channel.scene, feedback.scene])
 bot.use((new Session({ storage: Session.storagefileSync })).middleware())
 bot.use(stage.middleware())
 
