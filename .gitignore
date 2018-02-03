@@ -3,6 +3,7 @@
 *.sqlite
 *.sqlite-journal
 sessions.json
+nohup.out
 
 #######################
 #   Utilities
