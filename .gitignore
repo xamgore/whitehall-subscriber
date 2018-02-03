@@ -2,6 +2,7 @@
 !.env.example
 *.sqlite
 *.sqlite-journal
+sessions.json
 
 #######################
 #   Utilities

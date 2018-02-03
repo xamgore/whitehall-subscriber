@@ -28,7 +28,7 @@ const logTypes = {
 
 
 export default {
-  log: (uid, chatid, cmd) => insert('log', { uid, chatid, type: logTypes[cmd] }),
+  log: (uid, chatid, cmd) => insert('log', { uid, chatid, type: logTypes[cmd] || -1 }),
 
   event: url => ({
     // whether the event has been shown to the chat before
@@ -60,7 +60,10 @@ export default {
         [u.uid, u.name, u.nick]),
   }),
 
-  getActiveChats: () => select({ table: 'chats', where: { is_active: true } }),
+  chats: {
+    getActive: () => select({ table: 'chats', where: { is_active: true } }),
+    getAll:    () => select({ table: 'chats' }),
+  },
 
   async create() {
     const queries = [

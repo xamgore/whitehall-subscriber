@@ -6,7 +6,7 @@
   "author": "xamgore <xamgore@ya.ru>",
   "license": "MIT",
   "scripts": {
-    "start": "nodemon --ignore *.sqlite ./index.js"
+    "start": "nodemon --ignore *.sqlite --ignore sessions.json ./index.js"
   },
   "dependencies": {
     "aigle": "^1.10.1",
@@ -31,6 +31,7 @@
     "nodemon": "^1.14.8",
     "osmosis": "^1.1.6",
     "sqlite3-wrapper": "^1.0.2",
-    "telegraf": "^3.17.2"
+    "telegraf": "^3.17.2",
+    "telegraf-session-local": "^0.0.4"
   }
 }

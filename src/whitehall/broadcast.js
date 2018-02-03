@@ -41,7 +41,7 @@ let fetchAndSend = async chatid => send(chatid, await fetchEvents())
 
 
 let fetchAndBroadcast = async () => {
-  let chats = await db.getActiveChats()
+  let chats = await db.chats.getActive()
   l.w(`Active chats: ${chats.length}`)
   let events = await fetchEvents()
   l.w(`Events: ${events.length}`)
