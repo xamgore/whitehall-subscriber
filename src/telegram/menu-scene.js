@@ -1,25 +1,11 @@
-import db from '../whitehall/database'
 import l from '../log'
+import mkMenuCommand from './menu-command'
 import BaseScene from 'telegraf/scenes/base'
 import SceneContext from 'telegraf/scenes/context'
 
 
-const listen = cmd => (ctx) => {
-  l.cmd(`/${cmd.name}`, l.user(ctx.from))
-  db.log(ctx.from.id, ctx.chat.id, cmd.name)
-
-  db.user({
-    uid:  ctx.from.id,
-    name: ctx.from.first_name,
-    nick: ctx.from.username,
-  }).saveInfo()
-
-  if (!cmd.admin || ctx.from.username === 'xamgore')
-    cmd.call(ctx)
-}
-
 BaseScene.prototype.commands = function (cmds) {
-  cmds.forEach(c => this.hears(c.text, listen(c)))
+  cmds.forEach(c => this.hears(c.text, mkMenuCommand(c)))
   return this
 }
 

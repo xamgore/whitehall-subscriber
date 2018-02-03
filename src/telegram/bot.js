@@ -7,7 +7,8 @@ import main from './stages/main'
 import channel from './stages/channel'
 
 import start from './commands/start'
-import fetch from './commands/channel'
+import fetch from './commands/fetch'
+import mkMenuCmd from './menu-command'
 
 
 // Create bot listener
@@ -27,9 +28,7 @@ bot.use(stage.middleware())
 bot.start(start.call)
 
 // is called when "more results" button is pressed
-bot.action('fetch news', fetch.call)
-
-bot.command('kek', ctx => ctx.reply('kek'))
+bot.action('fetch news', mkMenuCmd(fetch))
 
 
 export default bot
